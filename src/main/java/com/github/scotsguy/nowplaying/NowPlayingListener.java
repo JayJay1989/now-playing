@@ -1,43 +1,36 @@
 package com.github.scotsguy.nowplaying;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.client.sound.SoundInstanceListener;
-import net.minecraft.client.sound.WeightedSoundSet;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.ISoundEventListener;
+import net.minecraft.client.audio.SoundEventAccessor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
-@Environment(EnvType.CLIENT)
-public class NowPlayingListener implements SoundInstanceListener {
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
+public class NowPlayingListener implements ISoundEventListener {
+
     @Override
-    public void onSoundPlayed(SoundInstance sound, WeightedSoundSet soundSet) {
+    public void onPlaySound(ISound sound, SoundEventAccessor accessor) {
         if (sound.getCategory() == SoundCategory.MUSIC) {
-            Text name = Util.getSoundName(sound);
+            ITextComponent name = Util.getSoundName(sound);
             if (name == null) return;
-
-            NowPlayingConfig config = AutoConfig.getConfigHolder(NowPlayingConfig.class).getConfig();
-
-            if (config.musicStyle == NowPlayingConfig.Style.Toast) {
-                MinecraftClient.getInstance().getToastManager().add(new NowPlayingToast(name));
-            } else if (config.musicStyle == NowPlayingConfig.Style.Hotbar) {
-                MinecraftClient.getInstance().inGameHud.setOverlayMessage(new TranslatableText("record.nowPlaying", name), true);
+            if (NowPlayingConfig.Common.musicStyle.get() == NowPlayingConfig.Style.Toast) {
+                Minecraft.getInstance().getToastGui().add(new NowPlayingToast(name));
+            } else if (NowPlayingConfig.Common.musicStyle.get() == NowPlayingConfig.Style.Hotbar) {
+                Minecraft.getInstance().ingameGUI.setOverlayMessage(new TranslationTextComponent("record.nowPlaying", name), true);
             }
         } else if (sound.getCategory() == SoundCategory.RECORDS) {
-            NowPlayingConfig config = AutoConfig.getConfigHolder(NowPlayingConfig.class).getConfig();
-            if (config.jukeboxStyle != NowPlayingConfig.Style.Toast) return;
-
             MusicDiscItem disc = Util.getDiscFromSound(sound);
             if (disc == null) return;
-
-            MinecraftClient.getInstance().getToastManager().add(new NowPlayingToast(disc.getDescription(), new ItemStack(disc)));
-
+            if (NowPlayingConfig.Common.jukeboxStyle.get() != NowPlayingConfig.Style.Toast) return;
+            Minecraft.getInstance().getToastGui().add(new NowPlayingToast(disc.func_234801_g_(), new ItemStack(disc)));
         }
-
     }
 }

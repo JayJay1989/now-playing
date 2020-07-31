@@ -1,40 +1,57 @@
 package com.github.scotsguy.nowplaying;
 
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
-import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
-import org.jetbrains.annotations.NotNull;
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.io.WritingMode;
+import net.minecraftforge.common.ForgeConfigSpec;
 
-@Config(name = "now-playing")
-@SuppressWarnings("unused")
-public class NowPlayingConfig implements ConfigData {
-    @ConfigEntry.Gui.Tooltip
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    public Style musicStyle = Style.Toast;
+import java.nio.file.Path;
 
-    @ConfigEntry.Gui.Tooltip
-    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    public Style jukeboxStyle = Style.Hotbar;
+public class NowPlayingConfig{
 
-    public enum Style implements SelectionListEntry.Translatable {
-        Hotbar {
-            @Override
-            public @NotNull String getKey() {
-                return "now_playing.config.style.hotbar";
-            }
-        },
-        Toast {
-            @Override
-            public @NotNull String getKey() {
-                return "now_playing.config.style.toast";
-            }
-        },
-        Disabled {
-            @Override
-            public @NotNull String getKey() {
-                return "now_playing.config.style.disabled";
-            }
+    public static class Common{
+        public static ForgeConfigSpec.EnumValue<Style> musicStyle;
+        public static ForgeConfigSpec.EnumValue<Style> jukeboxStyle;
+
+        private static final ForgeConfigSpec.Builder COMMON = new ForgeConfigSpec.Builder();
+        public static final ForgeConfigSpec common_config;
+
+        static {
+            Common.init(COMMON);
+            common_config = COMMON.build();
+            NowPlaying.LOGGER.debug("Config for server has been initialized");
         }
+
+        public static void init(ForgeConfigSpec.Builder builder)
+        {
+            builder.push("Notification Style");
+            musicStyle = builder
+                    .comment("How the 'Now Playing' notification should be displayed when music plays normally.")
+                    .defineEnum("Music", Style.Toast);
+
+            jukeboxStyle = builder
+                    .comment("How the 'Now Playing' notification should be displayed when music plays from a jukebox.")
+                    .defineEnum("Jukebox", Style.Hotbar);
+            builder.pop();
+        }
+
+        public static void loadConfig(ForgeConfigSpec config, Path path) {
+            NowPlaying.LOGGER.debug("Loading server config");
+            final CommentedFileConfig file = CommentedFileConfig
+                    .builder(path)
+                    .sync()
+                    .autosave()
+                    .writingMode(WritingMode.REPLACE)
+                    .build();
+            NowPlaying.LOGGER.debug("Built server config");
+            file.load();
+            NowPlaying.LOGGER.debug("Loaded server config");
+            config.setConfig(file);
+        }
+    }
+
+    public enum Style {
+        Hotbar,
+        Toast,
+        Disabled
     }
 }

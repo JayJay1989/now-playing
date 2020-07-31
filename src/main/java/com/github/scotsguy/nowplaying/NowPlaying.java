@@ -1,15 +1,17 @@
 package com.github.scotsguy.nowplaying;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-@Environment(EnvType.CLIENT)
-public class NowPlaying implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        AutoConfig.register(NowPlayingConfig.class, JanksonConfigSerializer::new);
+@Mod("nowplaying")
+public class NowPlaying{
+
+    public static final Logger LOGGER = LogManager.getLogger();
+
+    public NowPlaying(){
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, NowPlayingConfig.Common.common_config);
     }
 }
