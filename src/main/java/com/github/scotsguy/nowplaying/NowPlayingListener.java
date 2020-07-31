@@ -17,20 +17,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class NowPlayingListener implements ISoundEventListener {
 
     @Override
-    public void onPlaySound(ISound sound, SoundEventAccessor accessor) {
+    public void onSoundPlayed(ISound sound, SoundEventAccessor accessor) {
         if (sound.getCategory() == SoundCategory.MUSIC) {
             ITextComponent name = Util.getSoundName(sound);
             if (name == null) return;
             if (NowPlayingConfig.Common.musicStyle.get() == NowPlayingConfig.Style.Toast) {
-                Minecraft.getInstance().getToastGui().add(new NowPlayingToast(name));
+                Minecraft.getInstance().getToastManager().add(new NowPlayingToast(name));
             } else if (NowPlayingConfig.Common.musicStyle.get() == NowPlayingConfig.Style.Hotbar) {
-                Minecraft.getInstance().ingameGUI.setOverlayMessage(new TranslationTextComponent("record.nowPlaying", name), true);
+                Minecraft.getInstance().inGameHud.setOverlayMessage(new TranslationTextComponent("record.nowPlaying", name), true);
             }
         } else if (sound.getCategory() == SoundCategory.RECORDS) {
             MusicDiscItem disc = Util.getDiscFromSound(sound);
             if (disc == null) return;
             if (NowPlayingConfig.Common.jukeboxStyle.get() != NowPlayingConfig.Style.Toast) return;
-            Minecraft.getInstance().getToastGui().add(new NowPlayingToast(disc.func_234801_g_(), new ItemStack(disc)));
+            Minecraft.getInstance().getToastManager().add(new NowPlayingToast(disc.getDescription(), new ItemStack(disc)));
         }
     }
 }

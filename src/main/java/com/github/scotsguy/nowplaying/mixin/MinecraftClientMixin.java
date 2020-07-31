@@ -16,10 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Minecraft.class)
 public class MinecraftClientMixin {
     @Shadow @Final
-    private SoundHandler soundHandler;
+    private SoundHandler soundManager;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     void registerSoundInstanceListener(GameConfiguration gameConfig, CallbackInfo ci) {
-        soundHandler.addListener(new NowPlayingListener());
+        soundManager.registerListener(new NowPlayingListener());
     }
 }
