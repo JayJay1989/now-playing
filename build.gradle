@@ -21,7 +21,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
 version = "${mod_version}"
-group = 'be.nevoka.projects.betterbedrockgenerator' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = 'com.github.scotsguy.nowplaying' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "now-playing-${minecraft_version}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
