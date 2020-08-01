@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(NowPlaying.MODID)
-public class NowPlaying{
+public class NowPlaying {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "nowplaying";
 

@@ -7,8 +7,7 @@ public class NowPlayingConfig{
     public static ForgeConfigSpec.EnumValue<Config.Style> musicStyle;
     public static ForgeConfigSpec.EnumValue<Config.Style> jukeboxStyle;
 
-    public static void init(Builder builder)
-    {
+    public static void init(Builder builder) {
         builder.comment("Now playing config");
         builder.push("Notification Style");
         musicStyle = builder
