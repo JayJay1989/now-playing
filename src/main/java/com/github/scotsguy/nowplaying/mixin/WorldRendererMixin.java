@@ -1,6 +1,7 @@
 package com.github.scotsguy.nowplaying.mixin;
 
-import com.github.scotsguy.nowplaying.NowPlayingConfig;
+import com.github.scotsguy.nowplaying.config.Config;
+import com.github.scotsguy.nowplaying.config.NowPlayingConfig;
 
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -15,7 +16,7 @@ public class WorldRendererMixin {
 
     @Redirect(method = "playRecord(Lnet/minecraft/util/SoundEvent;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/MusicDiscItem;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/IngameGui;setRecordPlayingOverlay(Lnet/minecraft/util/text/ITextComponent;)V"))
     private void modifyRecordPlayingOverlay(IngameGui ingameGUI, ITextComponent text) {
-        if (NowPlayingConfig.Common.jukeboxStyle.get() == NowPlayingConfig.Style.Hotbar) {
+        if (NowPlayingConfig.jukeboxStyle.get() == Config.Style.Hotbar) {
             ingameGUI.setRecordPlayingOverlay(text);
         }
     }

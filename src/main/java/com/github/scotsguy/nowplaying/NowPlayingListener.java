@@ -1,5 +1,7 @@
 package com.github.scotsguy.nowplaying;
 
+import com.github.scotsguy.nowplaying.config.Config;
+import com.github.scotsguy.nowplaying.config.NowPlayingConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISoundEventListener;
@@ -21,15 +23,15 @@ public class NowPlayingListener implements ISoundEventListener {
         if (sound.getCategory() == SoundCategory.MUSIC) {
             ITextComponent name = Util.getSoundName(sound);
             if (name == null) return;
-            if (NowPlayingConfig.Common.musicStyle.get() == NowPlayingConfig.Style.Toast) {
+            if (NowPlayingConfig.musicStyle.get() == Config.Style.Toast) {
                 Minecraft.getInstance().getToastManager().add(new NowPlayingToast(name));
-            } else if (NowPlayingConfig.Common.musicStyle.get() == NowPlayingConfig.Style.Hotbar) {
+            } else if (NowPlayingConfig.musicStyle.get() == Config.Style.Hotbar) {
                 Minecraft.getInstance().inGameHud.setOverlayMessage(new TranslationTextComponent("record.nowPlaying", name), true);
             }
         } else if (sound.getCategory() == SoundCategory.RECORDS) {
             MusicDiscItem disc = Util.getDiscFromSound(sound);
             if (disc == null) return;
-            if (NowPlayingConfig.Common.jukeboxStyle.get() != NowPlayingConfig.Style.Toast) return;
+            if (NowPlayingConfig.jukeboxStyle.get() != Config.Style.Toast) return;
             Minecraft.getInstance().getToastManager().add(new NowPlayingToast(disc.getDescription(), new ItemStack(disc)));
         }
     }
